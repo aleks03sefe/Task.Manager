@@ -1,3 +1,4 @@
 /*
-!Task.Manager/
+!*.h
+!*.cpp
 !.gitignore
