@@ -1,8 +1,9 @@
 #ifndef EMPLOYEE_H
 #define EMPLOYEE_H
 
-#include "sstream"
-#include "unordered_map"
+#include <sstream>
+#include <unordered_map>
+#include <vector>
 
 class employee {
 private:
@@ -15,15 +16,7 @@ public:
   employee(std::string firstName, std::string secondName, std::string title)
       : firstName(firstName), secondName(secondName), title(title) {}
 
-  std::stringstream testEmployees() {
-    std::stringstream ss;
-    ss << "Marcus" << " Delaney" << " ceo\n";
-    ss << "Priya" << " Chandrasekaran" << " marketing team lead\n";
-    ss << "Owen" << " Fitzgerald" << " intern\n";
-    ss << "Naomi" << " Vasquez" << " customer support\n";
-    ss << "Tobias" << " Renner" << " assistent\n";
-    return ss;
-  }
+  employee() = default;
 
   void addTask(std::string nameOfTask, int priority) {
     tasks[nameOfTask] = priority;
@@ -33,10 +26,49 @@ public:
     // list all the current tasks and select one and change the priority of it
   }
 
-  void getFirstName() const { this->firstName; }
-  void getSecondName() const { this->secondName; }
-  void getTitle() const { this->title; }
+  friend std::istream &operator>>(std::istream &in, employee &e);
+
+  std::string getFirstName() const { return firstName; }
+  std::string getSecondName() const { return secondName; }
+  std::string getTitle() const { return title; }
   void getTasks() const { this->tasks; }
 };
+
+std::istream &operator>>(std::istream &in, employee &e) {
+  in >> e.firstName >> e.secondName;
+  std::getline(in, e.title);
+  return in;
+}
+
+std::istream &operator>>(std::istream &in, std::vector<employee *> &eVec) {
+  employee *e = new employee();
+  while (in >> *e) {
+    eVec.push_back(e);
+    e = new employee();
+  }
+  delete e;
+  return in;
+}
+
+std::ostream &operator<<(std::ostream &out, const employee &e) {
+  out << e.getFirstName() << " " << e.getSecondName() << " " << e.getTitle();
+  return out;
+}
+
+std::ostream &operator<<(std::ostream &out, std::vector<employee *> &eVec) {
+  for (const employee *e : eVec)
+    out << *e << "\n";
+  return out;
+}
+
+std::stringstream testEmployees() {
+  std::stringstream ss;
+  ss << "Marcus" << " Delaney " << "ceo\n";
+  ss << "Priya" << " Chandrasekaran " << "marketing team lead\n";
+  ss << "Owen" << " Fitzgerald " << "intern\n";
+  ss << "Naomi" << " Vasquez " << "customer support\n";
+  ss << "Tobias" << " Renner " << "assistent\n";
+  return ss;
+}
 
 #endif
