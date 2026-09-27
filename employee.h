@@ -4,6 +4,7 @@
 #include <iostream>
 #include <limits>
 #include <sstream>
+#include <string>
 #include <unordered_map>
 #include <vector>
 
@@ -20,22 +21,28 @@ public:
 
   employee() = default;
 
-  void addTask(std::string nameOfTask, int priority) {
-    tasks[nameOfTask] = priority;
-  }
-
   void changePriority() {
     // list all the current tasks and select one and change the priority of it
   }
 
   friend std::istream &operator>>(std::istream &in, employee &e);
+  friend void addTask(std::vector<employee *> &eVec);
+  friend void showTask(std::vector<employee *> &eVec);
 
   std::string getFirstName() const { return firstName; }
   std::string getSecondName() const { return secondName; }
   std::string getTitle() const { return title; }
   void getTasks() const {
-    this->tasks;
-  } // dosent work for now as i dont need it
+
+    if (tasks.empty())
+      std::cout << "No tasks found\n";
+
+    for (const auto &pair : tasks) {
+      std::cout << " - " << pair.first << "(priority: " << pair.second << ")\n";
+    }
+  }
+
+  
 };
 
 std::istream &operator>>(std::istream &in, employee &e) {
@@ -73,19 +80,41 @@ std::ostream &operator<<(std::ostream &out, const employee &e) {
 }
 
 std::ostream &operator<<(std::ostream &out, std::vector<employee *> &eVec) {
-  for (const employee *e : eVec)
-    out << *e << "\n";
+
+  for (size_t i = 0; i < eVec.size(); i++)
+    out << '<' << i << '>' << ' ' << *eVec[i] << '\n';
+
   return out;
 }
 
-std::stringstream testEmployees() {
-  std::stringstream ss;
-  ss << "Marcus" << " Delaney " << "ceo\n";
-  ss << "Priya" << " Chandrasekaran " << "marketing team lead\n";
-  ss << "Owen" << " Fitzgerald " << "intern\n";
-  ss << "Naomi" << " Vasquez " << "customer support\n";
-  ss << "Tobias" << " Renner " << "assistent\n";
-  return ss;
+void addTask(std::vector<employee *> &eVec) {
+  std::cout << "Who should we add a task to?\n";
+  std::cout << eVec;
+
+  int index{};
+  std::cin >> index;
+
+  std::string name{};
+  std::cout << "Task name:\n";
+  std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  getline(std::cin, name);
+
+  int priority{};
+  std::cout << "from 1-10 how important is the task\n";
+  std::cin >> priority;
+
+  eVec[index]->tasks[name] = priority;
+  std::cout << '\n';
+}
+
+void showTask(std::vector<employee *> &eVec) {
+  std::cout << "see the Tasks of?\n";
+  std::cout << eVec;
+
+  int index{};
+  std::cin >> index;
+
+  eVec[index]->getTasks();
 }
 
 #endif
