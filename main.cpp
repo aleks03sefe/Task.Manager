@@ -23,8 +23,8 @@ void menu(std::vector<employee *> &eVec) {
   case 3:
     addTask(eVec);
     break;
-    case 4:
-showTask(eVec);
+  case 4:
+    showTask(eVec);
     break;
   default:
     std::cout << "Invaid input\n";
@@ -39,5 +39,7 @@ int main() {
 
   menu(eVec);
 
+  for (employee *e : eVec)
+    delete e;
   return 0;
 }
